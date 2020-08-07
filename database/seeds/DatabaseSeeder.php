@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Categories imported');
 
         DB::insert("insert into `adz_user` (`email`, `password`, `created_at`, `role`, `name`) values (?,?,now(),?,?)",
-            ['orlov@irkoms.ru', Hash::make('asdasd'), 'admin', 'Yuri Orlov']);
+            ['orlov@adz.me', Hash::make('asdasd'), 'admin', 'Yuri Orlov']);
         DB::insert("insert into `adz_user` (`email`, `password`, `created_at`, `role`, `name`) values (?,?,now(),?,?)",
             ['member@adz.me', Hash::make('qweqwe'), 'member', 'John Doe']);
         $this->command->info('Users imported');
