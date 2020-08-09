@@ -1,3 +1,4 @@
+import { stringify } from 'querystring'
 import axios from 'axios'
 
 export default {
@@ -72,20 +73,28 @@ export default {
   generate: {
     dir: '../public-webapp',
     crawler: false,
+    concurrency: 1,
     async routes() {
+      const apiBase = 'http://localhost:8081/api'
+      const payload1 = {}
+
+      // root categories for navbar
+      const q = stringify({ parentId: 0, fields: 'id,name,slug' })
+      await axios.get(`${apiBase}/categories?${q}`).then(({ data, status }) => {
+        if (status === 200) {
+          payload1.roots = data.categories
+        }
+      })
+
       const result = []
 
-      // root categories
-      const res1 = await axios.get('http://localhost:8081/api/categories')
-      if (res1.status === 200) {
-        const a = res1.data.categories.map((c) => `/categories/${c.slug}/`)
-        result.push(...a)
-      }
-
       // all categories
-      const res2 = await axios.get('http://localhost:8081/api/categories/all')
-      if (res2.status === 200) {
-        const a = res2.data.categories.map((c) => `/categories/${c.slug}/`)
+      const res1 = await axios.get(`${apiBase}/categories?fields=slug`)
+      if (res1.status === 200) {
+        const a = res1.data.categories.map((c) => ({
+          route: `/categories/${c.slug}/`,
+          payload: payload1,
+        }))
         result.push(...a)
       }
 

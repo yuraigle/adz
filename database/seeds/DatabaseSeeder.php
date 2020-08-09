@@ -40,10 +40,11 @@ class DatabaseSeeder extends Seeder
         $roots = DB::select("select id from `adz_category` where `parent_id` is null");
         foreach ($roots as $root) {
             $parentId = $root->id;
-            $childrenCnt = self::$faker->numberBetween(2, 15);
+            $childrenCnt = self::$faker->numberBetween(20, 150);
 
             for ($i = 0; $i < $childrenCnt; $i++) {
                 $name = self::$faker->unique()->sentence(4);
+                $name = preg_replace('/\.$/', '', $name);
                 $slug = $this->makeSlug($name);
                 $description = self::$faker->text(250);
                 $keywords = join(',', self::$faker->words(7));

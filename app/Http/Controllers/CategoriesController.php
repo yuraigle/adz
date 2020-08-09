@@ -11,21 +11,38 @@ class CategoriesController extends BaseController
 
     public function list(Request $req)
     {
-        $parentId = $req->get("parent_id", 0);
+        $id = $req->get('id', null);
+        $slug = $req->get('slug', null);
+        $parentId = $req->get('parentId', null);
+        $fields = $req->get('fields', 'id,name,slug,parent_id');
 
-        $res = DB::select(
-            "SELECT * FROM adz_category WHERE ifnull(parent_id, 0) = ? ORDER BY name",
-            [$parentId]
-        );
-        return response()
-            ->json(['categories' => $res])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:3000')
-            ->header('Access-Control-Allow-Methods', 'GET');
-    }
+        $where = '1=1';
+        $params = [];
+        if ($id) {
+            $where = 'id = ?';
+            $params = [$id];
+        } elseif ($slug) {
+            $where = 'slug = ?';
+            $params = [$slug];
+        } elseif ($parentId !== null) {
+            $where = 'ifnull(parent_id, 0) = ?';
+            $params = [$parentId];
+        }
 
-    public function listAll()
-    {
-        $res = DB::select("SELECT * FROM adz_category ORDER BY `name` LIMIT 25");
+        $allowedFields = ['id', 'name', 'slug', 'parent_id', 'description', 'keywords'];
+        $sqlFields = '';
+        foreach (preg_split('/,/', $fields) as $field) {
+            if (in_array(trim($field), $allowedFields)) {
+                $sqlFields .= $sqlFields ? ',' : '';
+                $sqlFields .= "`$field`";
+            }
+        }
+        if (!$sqlFields) {
+            return response('Bad Request', 400);
+        }
+
+        $res = DB::select("SELECT $sqlFields FROM `adz_category` WHERE $where ORDER BY name", $params);
+
         return response()
             ->json(['categories' => $res])
             ->header('Access-Control-Allow-Origin', 'http://localhost:3000')
@@ -35,16 +52,6 @@ class CategoriesController extends BaseController
     public function create()
     {
         return response('Not implemented', 200);
-    }
-
-    public function read($id)
-    {
-        $obj = DB::select("SELECT * FROM adz_category WHERE id = ?", [$id]);
-
-        if (!$obj)
-            return response('Resource not found', 404);
-
-        return response()->json($obj);
     }
 
     public function update($id, Request $req)

@@ -26,10 +26,8 @@ $router->group(['prefix' => '/api'], function () use ($router) {
     $router->group(['prefix' => '/categories'], function () use ($router) {
         $c = 'CategoriesController';
         $router->get('/', "$c@list");
-        $router->get('/{id:[0-9]+}', "$c@read");
         $router->post('/', ["middleware" => "auth:admin", "uses" => "$c@create"]);
         $router->put('/{id:[0-9]+}', ["middleware" => "auth:admin", "uses" => "$c@update"]);
         $router->delete('/{id:[0-9]+}', ["middleware" => "auth:admin", "uses" => "$c@delete"]);
-        $router->get('/all', "$c@listAll");
     });
 });

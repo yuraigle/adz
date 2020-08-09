@@ -25,49 +25,15 @@
 </template>
 
 <script>
-// import axios from 'axios'
-// import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'AppNavbar',
 
-  // serverCacheKey() {
-  //   return 'AppNavbar'
-  // },
-
-  // async fetch() {
-  //   if (this.roots.length === 0) {
-  //     const res = await axios.get(
-  //       'http://localhost:8081/api/categories?parent_id=0'
-  //     )
-  //     this.roots = res.data.categories
-  //   }
-
-  //   // if (this.rootsList.length === 0) {
-  //   //   await this.categoriesFetchRoots()
-  //   // }
-  // },
-
-  data: () => ({
-    roots: [
-      { id: 2550, name: 'Community', slug: 'community' },
-      { id: 2549, name: 'For Sale', slug: 'for-sale' },
-      { id: 2553, name: 'Jobs', slug: 'jobs' },
-      { id: 2551, name: 'Motors', slug: 'cars-vans-motorbikes' },
-      { id: 2526, name: 'Pets', slug: 'pets' },
-      { id: 10201, name: 'Property', slug: 'flats-houses' },
-      { id: 2554, name: 'Services', slug: 'business-services' },
-    ],
-  }),
-
-  // computed: {
-  //   ...mapState({
-  //     rootsList: (state) => state.categories.roots,
-  //   }),
-  // },
-
-  // methods: {
-  //   ...mapActions('categories', { categoriesFetchRoots: 'fetchRoots' }),
-  // },
+  computed: {
+    ...mapState({
+      roots: (state) => state.categories.roots,
+    }),
+  },
 }
 </script>
