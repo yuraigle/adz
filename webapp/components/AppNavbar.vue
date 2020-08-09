@@ -25,15 +25,23 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'AppNavbar',
 
+  async fetch() {
+    if (!this.roots || !this.roots.length) {
+      await this.fetchRoots()
+    }
+  },
+
   computed: {
-    ...mapState({
-      roots: (state) => state.categories.roots,
-    }),
+    ...mapState('categories', ['roots']),
+  },
+
+  methods: {
+    ...mapActions('categories', ['fetchRoots']),
   },
 }
 </script>

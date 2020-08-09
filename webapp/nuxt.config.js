@@ -88,7 +88,7 @@ export default {
 
       const result = []
 
-      // all categories
+      // Categories
       const res1 = await axios.get(`${apiBase}/categories?fields=slug`)
       if (res1.status === 200) {
         const a = res1.data.categories.map((c) => ({
@@ -97,6 +97,10 @@ export default {
         }))
         result.push(...a)
       }
+
+      // ADs
+
+      // Articles
 
       return result
     },
