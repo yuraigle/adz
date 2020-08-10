@@ -73,30 +73,36 @@ export default {
   generate: {
     dir: '../public-webapp',
     crawler: false,
-    concurrency: 1,
     async routes() {
       const apiBase = 'http://localhost:8081/api'
-      const payload1 = {}
+
+      // all categories
+      let allCats = []
+      const qq = stringify({
+        fields: 'id,name,slug,description,keywords,parent_id',
+      })
+      await axios
+        .get(`${apiBase}/categories?${qq}`)
+        .then(({ data, status }) => {
+          if (status === 200) {
+            allCats = data.categories
+          }
+        })
 
       // root categories for navbar
-      const q = stringify({ parentId: 0, fields: 'id,name,slug' })
-      await axios.get(`${apiBase}/categories?${q}`).then(({ data, status }) => {
-        if (status === 200) {
-          payload1.roots = data.categories
-        }
-      })
+      const roots = allCats.filter((el) => el.parent_id === null)
 
       const result = []
 
-      // Categories
-      const res1 = await axios.get(`${apiBase}/categories?fields=slug`)
-      if (res1.status === 200) {
-        const a = res1.data.categories.map((c) => ({
+      // Categories pages
+      const a = allCats.map((c) => {
+        const children = allCats.filter((el) => el.parent_id === c.id)
+        return {
           route: `/categories/${c.slug}/`,
-          payload: payload1,
-        }))
-        result.push(...a)
-      }
+          payload: { roots, category: c, children },
+        }
+      })
+      result.push(...a)
 
       // ADs
 

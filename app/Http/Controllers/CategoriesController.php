@@ -41,7 +41,7 @@ class CategoriesController extends BaseController
             return response('Bad Request', 400);
         }
 
-        $res = DB::select("SELECT $sqlFields FROM `adz_category` WHERE $where ORDER BY name", $params);
+        $res = DB::select("SELECT $sqlFields FROM `adz_category` WHERE $where ORDER BY `name`", $params);
 
         return response()
             ->json(['categories' => $res])

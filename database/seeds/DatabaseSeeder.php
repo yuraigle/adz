@@ -35,26 +35,6 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function fakeCategories()
-    {
-        $roots = DB::select("select id from `adz_category` where `parent_id` is null");
-        foreach ($roots as $root) {
-            $parentId = $root->id;
-            $childrenCnt = self::$faker->numberBetween(20, 150);
-
-            for ($i = 0; $i < $childrenCnt; $i++) {
-                $name = self::$faker->unique()->sentence(4);
-                $name = preg_replace('/\.$/', '', $name);
-                $slug = $this->makeSlug($name);
-                $description = self::$faker->text(250);
-                $keywords = join(',', self::$faker->words(7));
-
-                DB::insert("insert into `adz_category` (`name`, `slug`, `description`, `keywords`, `parent_id`)
-                    values (?,?,?,?,?)", [$name, $slug, $description, $keywords, $parentId]);
-            }
-        }
-    }
-
     private function makeSlug($name)
     {
         $slug = preg_replace('/[^a-z0-9]/', '-', strtolower($name));
@@ -69,9 +49,39 @@ class DatabaseSeeder extends Seeder
         return $slug;
     }
 
+    private function makeFakeCategory($parentId)
+    {
+        $name = self::$faker->unique()->sentence(4);
+        $name = preg_replace('/\.$/', '', $name);
+        $slug = $this->makeSlug($name);
+        $description = self::$faker->text(250);
+        $keywords = join(',', self::$faker->words(7));
+
+        DB::insert("insert into `adz_category` (`name`, `slug`, `description`, `keywords`, `parent_id`)
+                    values (?,?,?,?,?)", [$name, $slug, $description, $keywords, $parentId]);
+        $obj = DB::selectOne("select id from `adz_category` where `slug` = ?", [$slug]);
+        return $obj->id;
+    }
+
+    private function fakeCategories()
+    {
+        $roots = DB::select("select id from `adz_category` where `parent_id` is null");
+        foreach ($roots as $root) {
+            for ($i1 = 0; $i1 < self::$faker->numberBetween(3, 7); $i1++) {
+                $id1 = $this->makeFakeCategory($root->id);
+                for ($i2 = 0; $i2 < self::$faker->numberBetween(2, 4); $i2++) {
+                    $id2 = $this->makeFakeCategory($id1);
+                    for ($i3 = 0; $i3 < self::$faker->randomElement([0,2,3]); $i3++) {
+                        $id3 = $this->makeFakeCategory($id2);
+                    }
+                }
+            }
+        }
+    }
+
     private function fakeUsers()
     {
-        $pass1 = Hash::make('qweqwe');
+        $pass1 = Hash::make('qweqwe'); // single pass for all generated members
 
         for ($i = 0; $i < 1000; $i++) {
             $email = self::$faker->unique()->email;

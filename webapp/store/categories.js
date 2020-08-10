@@ -45,7 +45,7 @@ export const actions = {
         .then(({ data, status }) => {
           if (status === 200) {
             commit('mergeList', data.categories)
-            resolve()
+            resolve(data.categories)
           } else {
             reject(new Error(`API CODE #${status}`))
           }
