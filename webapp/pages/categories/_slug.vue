@@ -1,18 +1,24 @@
 <template>
-  <section class="section">
-    <h1 class="title is-4">{{ category.name }}</h1>
-    <p>{{ category.description }}</p>
+  <div class="columns">
+    <aside class="column is-2">
+      <ul>
+        <li v-for="child in children" :key="child.slug">
+          <nuxt-link
+            :to="{ name: 'categories-slug', params: { slug: child.slug } }"
+          >
+            {{ child.name }}
+          </nuxt-link>
+        </li>
+      </ul>
+    </aside>
 
-    <ul>
-      <li v-for="child in children" :key="child.slug">
-        <nuxt-link
-          :to="{ name: 'categories-slug', params: { slug: child.slug } }"
-        >
-          {{ child.name }}
-        </nuxt-link>
-      </li>
-    </ul>
-  </section>
+    <div class="column is-10">
+      <section>
+        <h1 class="title is-4">{{ category.name }}</h1>
+        <p>{{ category.description }}</p>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>

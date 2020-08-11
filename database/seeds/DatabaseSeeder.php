@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
 
     private function makeFakeCategory($parentId)
     {
-        $name = self::$faker->unique()->sentence(4);
+        $name = self::$faker->unique()->sentence(3);
         $name = preg_replace('/\.$/', '', $name);
         $slug = $this->makeSlug($name);
         $description = self::$faker->text(250);

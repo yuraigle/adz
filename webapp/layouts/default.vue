@@ -2,12 +2,21 @@
   <div>
     <AppNavbar />
 
-    <section class="main-content columns">
-      <aside class="column is-2 section">aside</aside>
+    <div class="content container">
+      <nuxt />
+    </div>
 
-      <div class="container column is-10">
-        <nuxt />
+    <footer class="footer">
+      <div class="has-text-centered">
+        FOOT
       </div>
-    </section>
+    </footer>
   </div>
 </template>
+
+<style scoped>
+.content {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+</style>
